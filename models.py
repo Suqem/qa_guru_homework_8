@@ -53,7 +53,9 @@ class Cart:
         Метод добавления продукта в корзину.
         Если продукт уже есть в корзине, то увеличиваем количество
         """
-        if self.products.get(product) is not None:
+        if buy_count == 0:
+            raise ValueError('Количество товара быть больше нуля')
+        if product in self.products.keys():
             self.products[product] += buy_count
         else:
             self.products[product] = buy_count
@@ -84,10 +86,9 @@ class Cart:
         Учтите, что товаров может не хватать на складе.
         В этом случае нужно выбросить исключение ValueError
         """
-        for product in self.products:
-            a = self.products.get(product)
-            if a > product.quantity:
-                raise ValueError
-            elif a is not None:
-                product.buy(a)
-        self.products = {}
+        if not self.products:
+            raise ValueError('Корзина пуста')
+        for product, quantity in self.products.items():
+            product.buy(quantity)
+
+        self.clear()
